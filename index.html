@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebUI 2 - Deno - Todo</title>
+    <script src="/webui.js"></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --border-color: #aaa;
+        --spacing-xs: 4px;
+        --spacing-sm: 8px;
+        --spacing-md: 16px;
+        --spacing-lg: 24px;
+        --spacing-xl: 32px;
+        --border-radius-xs: var(--spacing-xs);
+        --border-radius-sm: var(--spacing-sm);
+        --border-radius-md: var(--spacing-md);
+        --border-radius-lg: var(--spacing-lg);
+        --border-radius-xl: var(--spacing-xl);
+        --margin-xs: var(--spacing-xs);
+        --margin-sm: var(--spacing-sm);
+        --margin-md: var(--spacing-md);
+        --margin-lg: var(--spacing-lg);
+        --margin-xl: var(--spacing-xl);
+        --padding-xs: var(--spacing-xs);
+        --padding-sm: var(--spacing-sm);
+        --padding-md: var(--spacing-md);
+        --padding-lg: var(--spacing-lg);
+        --padding-xl: var(--spacing-xl);
+        --background-color: #666;
+        --color: #ddd;
+        --color-primary-main: #00bfff;
+        --color-primary-dark: #009ddd;
+        --color-danger-main: #f44;
+        --color-danger-dark: #c00;
+        --color-success-main: #00c851;
+        --color-success-dark: #007e33;
+        --color-info-main: #33b5e5;
+        --color-info-dark: #09c;
+        --color-warning-main: #fb3;
+        --color-warning-dark: #f80;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      body {
+        width: 100%;
+        height: 100%;
+        background-color: #444;
+      }
+
+      button {
+        border: none;
+        border-radius: var(--border-radius-xs);
+        outline: none;
+        padding-inline: var(--spacing-md);
+        padding-block: var(--padding-sm);
+        font-weight: bold;
+      }
+
+      input {
+        background-color: transparent;
+        accent-color: var(--color-success-main);
+        color: var(--color);
+      }
+
+      #root {
+        margin-top: 32px;
+        margin-inline: auto;
+        border-radius: var(--border-radius-md);
+        width: 600px;
+        padding-top: 32px;
+        padding-bottom: var(--padding-lg);
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-lg);
+        background-color: #666;
+        color: var(--color);
+      }
+
+      #heading {
+        text-align: center;
+        font-size: 3rem;
+      }
+
+      #editor {
+        margin-inline: var(--margin-lg);
+        display: flex;
+        align-items: stretch;
+        gap: 16px;
+      }
+
+      #editor-textfield {
+        border: 2px solid var(--border-color);
+        border-radius: var(--border-radius-xs);
+        outline: none;
+        padding: 8px 16px;
+        flex: 1;
+        font-size: 16px;
+      }
+
+      #editor-textfield::placeholder {
+        color: var(--border-color);
+      }
+
+      #editor-textfield:focus-within {
+        border-color: var(--color-primary-main);
+      }
+
+      #editor-submit-button {
+        background-color: var(--color-primary-dark);
+        color: white;
+      }
+
+      #editor-submit-button:hover {
+        background-color: var(--color-primary-main);
+      }
+
+      #divider {
+        border-bottom: 2px solid var(--border-color);
+      }
+
+      #list {
+        margin-inline: var(--margin-lg);
+        list-style-type: none;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-lg);
+      }
+
+      .todo {
+        display: flex;
+        align-items: center;
+      }
+
+      .todo__checkbox {
+        overflow: hidden;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+      }
+
+      .todo__checkbox__input {
+        --size: 24px;
+        border-radius: var(--border-radius-xs);
+        width: var(--size);
+        height: var(--size);
+        font-size: 1.5rem;
+      }
+
+      .todo__checkbox__content {
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .todo__button {
+        background-color: var(--color-danger-dark);
+        color: white;
+      }
+
+      .todo__button:hover {
+        background-color: var(--color-danger-main);
+      }
+
+      .skeleton {
+        --height-sm: 24px;
+        --height-md: 32px;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+        animation: fadeInOut 1s linear alternate infinite;
+      }
+
+      .skeleton--hidden {
+        display: none;
+      }
+
+      .skeleton__item {
+        border-radius: var(--border-radius-xs);
+        background-color: var(--border-color);
+      }
+
+      .skeleton__item--checkbox {
+        width: var(--height-sm);
+        height: var(--height-sm);
+      }
+
+      .skeleton__item--content {
+        flex: 1;
+        height: var(--height-sm);
+      }
+
+      .skeleton__item--button {
+        width: 85px;
+        height: var(--height-md);
+      }
+
+      @keyframes fadeInOut {
+        0% {
+          opacity: 0.5;
+        }
+
+        100% {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <h1 id="heading">ToDo</h1>
+      <form id="editor">
+        <input
+          id="editor-textfield"
+          name="editor-textfield"
+          placeholder="Enter todo"
+        />
+        <button type="submit" id="editor-submit-button">Add</button>
+      </form>
+      <div id="divider"></div>
+      <ul id="list">
+        <li class="list__item">
+          <div class="skeleton">
+            <span class="skeleton__item skeleton__item--checkbox"></span>
+            <span class="skeleton__item skeleton__item--content"></span>
+            <span class="skeleton__item skeleton__item--button"></span>
+          </div>
+        </li>
+        <li id="list-item1" class="list__item">
+          <form class="todo">
+            <label class="todo__checkbox">
+              <input type="checkbox" class="todo__checkbox__input" />
+              <span class="todo__checkbox__content">Finish app</span>
+            </label>
+            <button type="submit" class="todo__button">Remove</button>
+          </form>
+        </li>
+        <li id="list-item2" class="list__item">
+          <form class="todo todo--done">
+            <label class="todo__checkbox">
+              <input type="checkbox" class="todo__checkbox__input" checked />
+              <span class="todo__checkbox__content"
+                >Go to the shop and by the needed components.</span
+              >
+            </label>
+            <button type="submit" class="todo__button">Remove</button>
+          </form>
+        </li>
+        <li id="list-item2" class="list__item">
+          <form class="todo">
+            <label class="todo__checkbox">
+              <input type="checkbox" class="todo__checkbox__input" checked />
+              <span class="todo__checkbox__content"
+                >Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit
+                amet quas recusandae obcaecati asperiores nemo, soluta minima
+                suscipit, cupiditate possimus expedita? Quod labore autem
+                aliquam laboriosam. Dignissimos delectus illo nihil?</span
+              >
+            </label>
+            <button type="submit" class="todo__button">Remove</button>
+          </form>
+        </li>
+      </ul>
+    </div>
+
+    <script>
+      const elements = {};
+
+      const editor = document.getElementById('editor');
+      const editorTextfield = document.getElementById('editor-textfield');
+      const editorSubmitButton = document.getElementById(
+        'editor-submit-button'
+      );
+
+      const list = document.getElementById('list');
+
+      function getElement(id) {
+        if (!(id in elements)) {
+          const maybeElement = document.getElementById(id);
+          if (!maybeElement) return '';
+          elements[id] = maybeElement;
+        }
+
+        return elements[id];
+      }
+
+      function selectElement(selector) {
+        const maybeElement = document.querySelector(selector);
+        if (!maybeElement) return '';
+        return maybeElement.id;
+      }
+
+      const createTodoElement = ({ id, content, done, timeAdded }) => {
+        const html = /* html */ `
+          <li id="${id}" class="list__item">
+            <form class="todo ${done ? 'todo--done' : ''}">
+              <label class="todo__checkbox">
+                <input type='checkbox'
+                  class="todo__checkbox__input"
+                  ${done ? 'checked=""' : ''}
+                />
+                <span class="todo__checkbox__content">${content}</span>
+              </label>
+              <button type="submit" class="todo__button">Remove</button>
+            </form>
+          </li>
+        `;
+
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = html;
+        const listItem = wrapper.querySelector('.list__item');
+        const todo = wrapper.querySelector('.todo');
+        const checkbox = todo.querySelector('.todo__checkbox__input');
+        console.log({ checkbox });
+        checkbox.addEventListener('change', () =>
+          updateTodo(id, checkbox?.checked)
+        );
+
+        todo.addEventListener('submit', async event => {
+          event.preventDefault();
+          const result = await deleteTodo(id);
+        });
+
+        return listItem;
+      };
+
+      const addTodo = async event => {
+        event.preventDefault();
+        const todo = editorTextfield.value;
+        const result = await webui.call('add-todo', todo);
+        console.log({ result });
+        const todoElement = createTodoElement(result);
+
+        if (list.firstElementChild) list.firstElementChild.before(todoElement);
+        else list.appendChild(todoElement);
+      };
+
+      const updateTodo = async (id, done) => {
+        const result = await webui.call('delete-todo', done);
+
+        if (typeof result === 'string') {
+          if (result === 'not-found' || result === 'not-found') {
+            const todo = getElement(id);
+            if (!todo) return result;
+            todo.checked = !done;
+          }
+        }
+      };
+
+      const deleteTodo = async id => {
+        const result = await webui.call('delete-todo', id);
+
+        // if (typeof result === 'string') {
+        //   if (result === 'not-found') return result;
+        // }
+
+        const todoElement = getElement(id);
+        if (todoElement) todoElement.outerHTML = '';
+      };
+
+      editor.addEventListener('submit', addTodo);
+    </script>
+  </body>
+</html>
