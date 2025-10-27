@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebUI 2 - Deno - Todo</title>
+    <link rel="stylesheet" href="./index.css" />
+    <script src="/webui.js"></script>
+    <script defer src="./index.js"></script>
+  </head>
+  <body>
+    <template id="list-template">
+      <ul id="list"></ul>
+    </template>
+    <template id="skeleton">
+      <li class="list__item">
+        <div class="skeleton">
+          <span class="skeleton__item skeleton__item--checkbox"></span>
+          <span class="skeleton__item skeleton__item--content"></span>
+          <span class="skeleton__item skeleton__item--button"></span>
+        </div>
+      </li>
+    </template>        
+    <template id="empty-list-alert">
+      <blockquote class="empty-list-alert">
+        Todo list is empty.
+      </blockquote>
+    </template>
+
+    <div id="root">
+      <h1 id="heading">ToDo</h1>
+      <form id="editor">
+        <input
+          id="editor-textfield"
+          name="editor-textfield"
+          placeholder="Enter todo"
+          disabled
+        />
+        <button type="submit" id="editor-submit-button" disabled>Add</button>
+      </form>
+      <div id="divider"></div>
+      <div id="body"></div>
+    </div>
+  </body>
+</html>

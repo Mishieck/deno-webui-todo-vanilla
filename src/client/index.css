@@ -1,0 +1,220 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+:root {
+	--border-color: #aaa;
+	--spacing-xs: 4px;
+	--spacing-sm: 8px;
+	--spacing-md: 16px;
+	--spacing-lg: 24px;
+	--spacing-xl: 32px;
+	--border-radius-xs: var(--spacing-xs);
+	--border-radius-sm: var(--spacing-sm);
+	--border-radius-md: var(--spacing-md);
+	--border-radius-lg: var(--spacing-lg);
+	--border-radius-xl: var(--spacing-xl);
+	--margin-xs: var(--spacing-xs);
+	--margin-sm: var(--spacing-sm);
+	--margin-md: var(--spacing-md);
+	--margin-lg: var(--spacing-lg);
+	--margin-xl: var(--spacing-xl);
+	--padding-xs: var(--spacing-xs);
+	--padding-sm: var(--spacing-sm);
+	--padding-md: var(--spacing-md);
+	--padding-lg: var(--spacing-lg);
+	--padding-xl: var(--spacing-xl);
+	--background-color: #666;
+	--color: #ddd;
+	--color-primary-main: #00bfff;
+	--color-primary-dark: #009ddd;
+	--color-danger-main: #f44;
+	--color-danger-dark: #c00;
+	--color-success-main: #00c851;
+	--color-success-dark: #007e33;
+	--color-info-main: #33b5e5;
+	--color-info-dark: #09c;
+	--color-warning-main: #fb3;
+	--color-warning-dark: #f80;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+	width: 100%;
+	height: 100%;
+	background-color: #444;
+}
+
+button {
+	border: none;
+	border-radius: var(--border-radius-xs);
+	outline: none;
+	padding-inline: var(--spacing-md);
+	padding-block: var(--padding-sm);
+	font-weight: bold;
+}
+
+input {
+	background-color: transparent;
+	accent-color: var(--color-success-main);
+	color: var(--color);
+}
+
+#root {
+	margin-top: 32px;
+	margin-inline: auto;
+	border-radius: var(--border-radius-md);
+	width: 600px;
+	padding-top: 32px;
+	padding-bottom: var(--padding-lg);
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: var(--spacing-lg);
+	background-color: #666;
+	color: var(--color);
+}
+
+#heading {
+	text-align: center;
+	font-size: 3rem;
+}
+
+#editor {
+	margin-inline: var(--margin-lg);
+	display: flex;
+	align-items: stretch;
+	gap: 16px;
+}
+
+#editor-textfield {
+	border: 2px solid var(--border-color);
+	border-radius: var(--border-radius-xs);
+	outline: none;
+	padding: 8px 16px;
+	flex: 1;
+	font-size: 16px;
+}
+
+#editor-textfield::placeholder {
+	color: var(--border-color);
+}
+
+#editor-textfield:focus-within {
+	border-color: var(--color-primary-main);
+}
+
+#editor-submit-button {
+	background-color: var(--color-primary-dark);
+	color: white;
+
+	&:disabled {
+	  background-color: var(--border-color);
+	}
+}
+
+#editor-submit-button:not(:disabled):hover {
+	background-color: var(--color-primary-main);
+}
+
+#divider {
+	border-bottom: 2px solid var(--border-color);
+}
+
+#body {
+	margin-inline: var(--margin-lg);
+}
+
+#list {
+	list-style-type: none;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: var(--spacing-lg);
+}
+
+.todo {
+	display: flex;
+	align-items: center;
+}
+
+.todo__checkbox {
+	overflow: hidden;
+	flex: 1;
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-md);
+}
+
+.todo__checkbox__input {
+	--size: 24px;
+	border-radius: var(--border-radius-xs);
+	width: var(--size);
+	height: var(--size);
+	font-size: 1.5rem;
+}
+
+.todo__checkbox__content {
+	flex: 1;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.todo__button {
+	background-color: var(--color-danger-dark);
+	color: white;
+}
+
+.todo__button:hover {
+	background-color: var(--color-danger-main);
+}
+
+.skeleton {
+	--height-sm: 24px;
+	--height-md: 32px;
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-md);
+	animation: fadeInOut 1s linear alternate infinite;
+}
+
+.skeleton--hidden {
+	display: none;
+}
+
+.skeleton__item {
+	border-radius: var(--border-radius-xs);
+	background-color: var(--border-color);
+}
+
+.skeleton__item--checkbox {
+	width: var(--height-sm);
+	height: var(--height-sm);
+}
+
+.skeleton__item--content {
+	flex: 1;
+	height: var(--height-sm);
+}
+
+.skeleton__item--button {
+	width: 85px;
+	height: var(--height-md);
+}
+
+.empty-list-alert {
+
+}
+
+@keyframes fadeInOut {
+	0% {
+	  opacity: 0.5;
+	}
+
+	100% {
+	  opacity: 1;
+	}
+}

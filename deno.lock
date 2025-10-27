@@ -1,5 +1,50 @@
 {
-  "version": "2",
+  "version": "5",
+  "specifiers": {
+    "jsr:@std/fs@^1.0.19": "1.0.19",
+    "jsr:@std/internal@^1.0.10": "1.0.12",
+    "jsr:@std/internal@^1.0.9": "1.0.12",
+    "jsr:@std/path@^1.1.1": "1.1.2",
+    "jsr:@std/path@^1.1.2": "1.1.2",
+    "jsr:@webui/deno-webui@^2.5.11": "2.5.11",
+    "jsr:@zip-js/zip-js@^2.8.7": "2.8.8",
+    "npm:crc-32@1.2.2": "1.2.2"
+  },
+  "jsr": {
+    "@std/fs@1.0.19": {
+      "integrity": "051968c2b1eae4d2ea9f79a08a3845740ef6af10356aff43d3e2ef11ed09fb06",
+      "dependencies": [
+        "jsr:@std/internal@^1.0.9",
+        "jsr:@std/path@^1.1.1"
+      ]
+    },
+    "@std/internal@1.0.12": {
+      "integrity": "972a634fd5bc34b242024402972cd5143eac68d8dffaca5eaa4dba30ce17b027"
+    },
+    "@std/path@1.1.2": {
+      "integrity": "c0b13b97dfe06546d5e16bf3966b1cadf92e1cc83e56ba5476ad8b498d9e3038",
+      "dependencies": [
+        "jsr:@std/internal@^1.0.10"
+      ]
+    },
+    "@webui/deno-webui@2.5.11": {
+      "integrity": "6cea8473e48cd61d5eb0006baa31402e5d075db1d764ea6081d9172b76809c10",
+      "dependencies": [
+        "jsr:@std/fs",
+        "jsr:@std/path@^1.1.2",
+        "jsr:@zip-js/zip-js"
+      ]
+    },
+    "@zip-js/zip-js@2.8.8": {
+      "integrity": "d02be7ef8707977e714cd24e045882f0b396dbcecfcabd7b591c5cdba40e47b7"
+    }
+  },
+  "npm": {
+    "crc-32@1.2.2": {
+      "integrity": "sha512-ROmzCKrTnOwybPcJApAA6WBWij23HVfGVNKqqrZpuyZOHqK2CwHSvpGuyt/UNNvaIjEd8X5IFGp4Mh+Ie1IHJQ==",
+      "bin": true
+    }
+  },
   "remote": {
     "https://deno.land/std@0.192.0/_util/asserts.ts": "178dfc49a464aee693a7e285567b3d0b555dc805ff490505a8aae34f9cfb1462",
     "https://deno.land/std@0.192.0/_util/os.ts": "d932f56d41e4f6a6093d56044e29ce637f8dcc43c5a90af43504a889cf1775e3",
@@ -368,15 +413,9 @@
     "https://ejm.sh/github.com/webui-dev/deno-webui/blob/main/src/webui-macos-clang-x64/webui-2.dylib": "1fec58a01ca0da163fffbe4b3da934796493447b2d1d017e85f6c117f0a8f4e6",
     "https://ejm.sh/github.com/webui-dev/deno-webui/blob/main/src/webui-windows-msvc-x64/webui-2.dll": "ed8bd9ddc65cf1ea1e66e15a594c8f95f52724d4615ab7ba2ee44bdea454d7b9"
   },
-  "npm": {
-    "specifiers": {
-      "crc-32@1.2.2": "crc-32@1.2.2"
-    },
-    "packages": {
-      "crc-32@1.2.2": {
-        "integrity": "sha512-ROmzCKrTnOwybPcJApAA6WBWij23HVfGVNKqqrZpuyZOHqK2CwHSvpGuyt/UNNvaIjEd8X5IFGp4Mh+Ie1IHJQ==",
-        "dependencies": {}
-      }
-    }
+  "workspace": {
+    "dependencies": [
+      "jsr:@webui/deno-webui@^2.5.11"
+    ]
   }
 }

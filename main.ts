@@ -1,50 +1,36 @@
-// Same as hello_world.ts but using a local file
+import { BindCallback, WebUI } from "@webui/deno-webui";
+import * as database from "./src/server/database.ts";
 
-import { WebUI } from './deps.ts';
-import { DenoPath } from './deps.ts';
-import * as database from './database.ts';
-
-const getJsFunction =
-  (window: WebUI) =>
-  <Args extends Array<unknown>>(name: string) =>
-  (...args: Args) => {
-    try {
-      return window.script(`${name}(${args.join(',')})`);
-    } catch (error) {
-      console.error(error);
-      return new Error(`Filed to get JS function ${name}.`);
-    }
-  };
-
-const addTodo = async ({ window, data }: WebUI.Event) => {
-  console.log('Adding to do.');
-  console.log({ data });
-  const result = await database.add(data as string, new Date().toISOString());
-  if (result instanceof database.DatabaseError) return result.type;
-  return result;
+const addTodo: BindCallback<string> = async (
+  { arg }: WebUI.Event,
+) => {
+  return JSON.stringify(await database.add(arg.string(0)));
 };
 
-const deleteTodo = async ({ window, data }: WebUI.Event) => {
-  console.log('deleting todo', data);
-  const result = await database.deleteTodo(data as string);
-  if (result instanceof database.DatabaseError) return result.type;
-  return result;
+const getTodoList = async () => JSON.stringify(await database.getAll());
+
+const updateTodo: BindCallback<string> = async ({ arg }: WebUI.Event) => {
+  return JSON.stringify(await database.update(arg.string(0), arg.boolean(1)));
 };
 
-let exit: () => Promise<void>;
-let appWindow: WebUI;
+const deleteTodo: BindCallback<string> = async ({ arg }: WebUI.Event) => {
+  return JSON.stringify(await database.deleteTodo(arg.string(0)));
+};
 
 export const run = async () => {
-  if (exit) await exit();
+  const win = new WebUI();
 
-  if (!appWindow) {
-    appWindow = new WebUI();
-    appWindow.bind('add-todo', addTodo);
-    appWindow.bind('delete-todo', deleteTodo);
-  }
+  win.bind("addTodo", addTodo);
+  win.bind("getTodoList", getTodoList);
+  win.bind("updateTodo", updateTodo);
+  win.bind("deleteTodo", deleteTodo);
+  win.bind("exit", exit);
 
-  const html = await Deno.readTextFile('./index.html');
-  appWindow.show(html);
-  exit = () => Promise.resolve(appWindow.close());
+  win.setRootFolder("./src/client/");
+  await win.show("./index.html");
   await WebUI.wait();
 };
+
+export const exit = WebUI.exit.bind(WebUI);
+
+if (import.meta.main) run();
