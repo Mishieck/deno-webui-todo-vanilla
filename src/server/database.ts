@@ -1,86 +1,55 @@
-export type Todo = {
-  id: string;
-  content: string;
-  done: boolean;
-  timeAdded: number;
-};
+import { DatabaseError, Result } from "../shared/result.ts";
+import { Todo, TodoData } from "../shared/todo.ts";
 
-export const ERROR_CODES = {
-  NOT_FOUND: "not-found",
-  OPERATION_FAILED: "operation-failed",
-} as const;
+export class TodoList {
+  #data: Array<TodoData>;
 
-export type ErrorCodes = typeof ERROR_CODES;
-
-export class DatabaseError<Code extends keyof ErrorCodes> extends Error {
-  constructor(cause: Code, message: string) {
-    super(message, { cause: ERROR_CODES[cause] });
+  constructor(data: Array<TodoData>) {
+    this.#data = data;
   }
 
-  toJSON() {
-    const { cause, message } = this;
-    return { cause: cause as string, message };
+  async add(item: TodoData): Promise<Result<TodoData, "OPERATION_FAILED">> {
+    this.#data.push(item);
+    return Promise.resolve(item);
+  }
+
+  async getOne(id: string): Promise<Result<TodoData, "NOT_FOUND">> {
+    return (
+      this.#data.find((todo) => todo.id === id) ??
+        new DatabaseError("NOT_FOUND", `Todo "${id}" not found.`)
+    );
+  }
+
+  async getAll(): Promise<Result<Array<TodoData>, "OPERATION_FAILED">> {
+    return this.#data;
+  }
+
+  async update(id: TodoData["id"]): Promise<Result<TodoData, "NOT_FOUND">> {
+    const data = this.#data.find((item) => item.id === id);
+
+    if (!data) {
+      return new DatabaseError(
+        "NOT_FOUND",
+        `Todo item with id '${id}' was not found.`,
+      );
+    }
+
+    const todo = new Todo(data);
+    todo.update();
+    return todo.toJSON();
+  }
+
+  async remove(id: string): Promise<Result<TodoData, "NOT_FOUND">> {
+    const index = this.#data.findIndex((item) => item.id === id);
+
+    if (index !== -1) {
+      const [item] = this.#data.splice(index, 1);
+      return item;
+    }
+
+    return new DatabaseError(
+      "NOT_FOUND",
+      `Todo item with id '${id}' was not found.`,
+    );
   }
 }
-
-let todoList: Array<Todo> = [];
-
-export const add = async (
-  content: string,
-): Promise<Todo | DatabaseError<"OPERATION_FAILED">> => {
-  const todo: Todo = {
-    id: crypto.randomUUID(),
-    content,
-    done: false,
-    timeAdded: Date.now(),
-  };
-
-  todoList.push(todo);
-  return todo;
-};
-
-export const getOne = async (
-  id: string,
-): Promise<Todo | DatabaseError<"NOT_FOUND">> => {
-  return (
-    todoList.find((todo) => todo.id === id) ??
-      new DatabaseError("NOT_FOUND", `Todo "${id}" not found.`)
-  );
-};
-
-export const getAll = async (): Promise<Array<Todo>> => {
-  return todoList;
-};
-
-export const update = async (
-  id: string,
-  done: boolean,
-): Promise<
-  | Todo
-  | DatabaseError<
-    "NOT_FOUND" | "OPERATION_FAILED"
-  >
-> => {
-  const todoItem = await getOne(id);
-  if (todoItem instanceof DatabaseError) return todoItem;
-  todoItem.done = done;
-  return todoItem;
-};
-
-export const deleteTodo = async (
-  id: string,
-): Promise<
-  | Todo
-  | DatabaseError<
-    "NOT_FOUND" | "OPERATION_FAILED"
-  >
-> => {
-  const todo = todoList.find((item) => item.id === id);
-
-  if (!todo) {
-    return new DatabaseError("NOT_FOUND", `Todo "${id}" not found.`);
-  }
-
-  todoList = todoList.filter((item) => item.id !== id);
-  return todo;
-};

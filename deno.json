@@ -1,8 +1,8 @@
 {
   "tasks": {
-    "dev": "deno run --allow-read --allow-write --allow-net --allow-env --allow-ffi main.ts",
+    "dev": "deno run -A dev.ts",
     "watch": "deno run --allow-read --allow-write --allow-net --allow-env --allow-ffi watch.ts",
-    "bundle": "deno bundle --outdir dist src/client/index.html"
+    "build": "deno -A build.ts"
   },
   "imports": {
     "@webui/deno-webui": "jsr:@webui/deno-webui@^2.5.11",

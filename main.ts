@@ -1,32 +1,46 @@
 import { BindCallback, WebUI } from "@webui/deno-webui";
-import * as database from "./src/server/database.ts";
+import { TodoList } from "./src/server/database.ts";
+import { Todo } from "./src/shared/todo.ts";
+import { Callbacks } from "./src/shared/callbacks.ts";
+
+const todoList = new TodoList([]);
+
+const bindAll = (
+  win: WebUI,
+  callbacks: Record<keyof Callbacks, BindCallback<string | void>>,
+) => {
+  for (const [key, value] of Object.entries(callbacks)) win.bind(key, value);
+};
 
 const addTodo: BindCallback<string> = async (
   { arg }: WebUI.Event,
 ) => {
-  return JSON.stringify(await database.add(arg.string(0)));
+  const todoItem = Todo.fromContent(arg.string(0));
+  return JSON.stringify(await todoList.add(todoItem.toJSON()));
 };
 
-const getTodoList = async () => JSON.stringify(await database.getAll());
+const getTodoList = async () => JSON.stringify(await todoList.getAll());
 
 const updateTodo: BindCallback<string> = async ({ arg }: WebUI.Event) => {
-  return JSON.stringify(await database.update(arg.string(0), arg.boolean(1)));
+  return JSON.stringify(await todoList.update(arg.string(0)));
 };
 
 const deleteTodo: BindCallback<string> = async ({ arg }: WebUI.Event) => {
-  return JSON.stringify(await database.deleteTodo(arg.string(0)));
+  return JSON.stringify(await todoList.remove(arg.string(0)));
 };
 
 export const run = async () => {
   const win = new WebUI();
 
-  win.bind("addTodo", addTodo);
-  win.bind("getTodoList", getTodoList);
-  win.bind("updateTodo", updateTodo);
-  win.bind("deleteTodo", deleteTodo);
-  win.bind("exit", exit);
+  bindAll(win, {
+    addTodo: addTodo,
+    getTodoList: getTodoList,
+    updateTodo: updateTodo,
+    deleteTodo: deleteTodo,
+    exit: exit,
+  });
 
-  win.setRootFolder("./src/client/");
+  win.setRootFolder("./dist/");
   await win.show("./index.html");
   await WebUI.wait();
 };

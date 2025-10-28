@@ -1,39 +1,40 @@
-import { exit } from "./main.ts";
+import { runBuild } from "./dev.ts";
+import { exit, run } from "./main.ts";
 
 type AppFunction = () => Promise<void>;
 
-const getApp = async () => {
-  const { run } = await import("./main.ts");
-  return { run };
-};
-
-const watchApp = (run: AppFunction) => async () => {
+const watch = (run: AppFunction) => async () => {
   const watchableFiles = [
+    "./src/",
     "./main.ts",
+    "./build.ts",
+    "./dev.ts",
     "./watch.ts",
-    "./index.html",
-    "./database.ts",
   ];
 
   const watcher = Deno.watchFs(watchableFiles);
 
   // Loop over the events
   for await (const event of watcher) {
-    const paths = event.paths.filter((path) => /\.(html|css|js)$/.test(path));
+    const paths = event.paths.filter((path) =>
+      /\.(html|css|js|ts|tsx)$/.test(path)
+    );
+
     console.log({ paths });
 
-    if (paths.length && event.kind === "modify") {
+    if (event.kind === "modify" && paths.length) {
       try {
-        await new Promise((r) => setTimeout(r, 10));
+        // await new Promise((r) => setTimeout(r, 10));
         exit();
+        await runBuild();
         await run();
       } catch (error) {
-        console.log({ error });
+        console.error(error);
+        exit();
       }
     }
   }
 };
 
-const { run } = await getApp();
-watchApp(run)();
+watch(run)();
 await run();
