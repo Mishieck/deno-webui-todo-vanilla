@@ -3,7 +3,24 @@ import { TodoList } from "./src/server/database.ts";
 import { Todo } from "./src/shared/todo.ts";
 import { Callbacks } from "./src/shared/callbacks.ts";
 
-const todoList = new TodoList([]);
+const todoList = new TodoList();
+
+export const run = async () => {
+  const win = new WebUI();
+
+  bindAll(win, {
+    addTodo: addTodo,
+    getTodoList: getTodoList,
+    updateTodo: updateTodo,
+    deleteTodo: deleteTodo,
+    exit: exit,
+  });
+
+  win.setRootFolder("./dist/");
+  await todoList.init();
+  await win.show("./index.html");
+  await WebUI.wait();
+};
 
 const bindAll = (
   win: WebUI,
@@ -29,22 +46,9 @@ const deleteTodo: BindCallback<string> = async ({ arg }: WebUI.Event) => {
   return JSON.stringify(await todoList.remove(arg.string(0)));
 };
 
-export const run = async () => {
-  const win = new WebUI();
-
-  bindAll(win, {
-    addTodo: addTodo,
-    getTodoList: getTodoList,
-    updateTodo: updateTodo,
-    deleteTodo: deleteTodo,
-    exit: exit,
-  });
-
-  win.setRootFolder("./dist/");
-  await win.show("./index.html");
-  await WebUI.wait();
+export const exit = () => {
+  todoList.close();
+  WebUI.exit();
 };
-
-export const exit = WebUI.exit.bind(WebUI);
 
 if (import.meta.main) run();

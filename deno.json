@@ -1,14 +1,14 @@
 {
   "tasks": {
     "dev": "deno run -A dev.ts",
-    "watch": "deno run --allow-read --allow-write --allow-net --allow-env --allow-ffi watch.ts",
-    "build": "deno -A build.ts"
+    "watch": "deno run -A watch.ts",
+    "build": "deno run -A build.ts"
   },
   "imports": {
     "@webui/deno-webui": "jsr:@webui/deno-webui@^2.5.11",
     "ramda": "https://deno.land/x/ramda@v0.27.2/mod.ts"
   },
   "compilerOptions": {
-    "lib": ["es2024", "deno.ns", "dom"]
+    "lib": ["es2024", "deno.ns", "deno.unstable", "dom"]
   }
 }

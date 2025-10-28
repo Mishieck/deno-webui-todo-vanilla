@@ -1,31 +1,40 @@
 import { DatabaseError, Result } from "../shared/result.ts";
 import { Todo, TodoData } from "../shared/todo.ts";
 
-export class TodoList {
-  #data: Array<TodoData>;
+const PREFIX = "todo-list";
+let store: Deno.Kv;
+const createKey = (id: string) => [PREFIX, id];
 
-  constructor(data: Array<TodoData>) {
-    this.#data = data;
+export class TodoList {
+  async init() {
+    store = await Deno.openKv();
   }
 
   async add(item: TodoData): Promise<Result<TodoData, "OPERATION_FAILED">> {
-    this.#data.push(item);
+    await store.set(createKey(item.id), item);
     return Promise.resolve(item);
   }
 
   async getOne(id: string): Promise<Result<TodoData, "NOT_FOUND">> {
+    const result = await store.get<TodoData>([id]);
+
     return (
-      this.#data.find((todo) => todo.id === id) ??
+      result.value ??
         new DatabaseError("NOT_FOUND", `Todo "${id}" not found.`)
     );
   }
 
   async getAll(): Promise<Result<Array<TodoData>, "OPERATION_FAILED">> {
-    return this.#data;
+    const items: Array<TodoData> = [];
+    let entry: Deno.KvEntry<TodoData> | undefined = undefined;
+    const list = store.list<TodoData>({ prefix: [PREFIX] });
+    while ((entry = (await list.next()).value)) items.push(entry.value);
+    return items;
   }
 
   async update(id: TodoData["id"]): Promise<Result<TodoData, "NOT_FOUND">> {
-    const data = this.#data.find((item) => item.id === id);
+    const key = createKey(id);
+    const data = (await store.get<TodoData>(key)).value;
 
     if (!data) {
       return new DatabaseError(
@@ -36,14 +45,17 @@ export class TodoList {
 
     const todo = new Todo(data);
     todo.update();
-    return todo.toJSON();
+    const newData = todo.toJSON();
+    await store.set(key, newData);
+    return newData;
   }
 
   async remove(id: string): Promise<Result<TodoData, "NOT_FOUND">> {
-    const index = this.#data.findIndex((item) => item.id === id);
+    const key = createKey(id);
+    const item = (await store.get<TodoData>(key)).value;
 
-    if (index !== -1) {
-      const [item] = this.#data.splice(index, 1);
+    if (item) {
+      store.delete(key);
       return item;
     }
 
@@ -51,5 +63,9 @@ export class TodoList {
       "NOT_FOUND",
       `Todo item with id '${id}' was not found.`,
     );
+  }
+
+  close() {
+    store.close();
   }
 }
