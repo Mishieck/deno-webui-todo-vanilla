@@ -1,0 +1,9 @@
+button {
+	border: none;
+	border-radius: var(--border-radius-xs);
+	outline: none;
+	padding-inline: var(--spacing-md);
+	padding-block: var(--padding-sm);
+	font-weight: bold;
+}
+

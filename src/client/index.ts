@@ -1,6 +1,7 @@
 import { AddResult } from "../shared/database.ts";
 import { Todo, TodoData } from "../shared/todo.ts";
 import "./global.d.ts";
+import "./todo-app.ts";
 
 let editor: HTMLFormElement;
 let editorTextfield: HTMLInputElement;
@@ -222,12 +223,12 @@ const main = () => {
       ?.content
       .firstElementChild as HTMLQuoteElement;
 
-  Promise
-    .resolve(addLoader())
-    .then(getTodoList)
-    .then((items) => stopTimer().then(() => items))
-    .then(addTodoList)
-    .then(enableForm);
+  // Promise
+  //   .resolve(addLoader())
+  //   .then(getTodoList)
+  //   .then((items) => stopTimer().then(() => items))
+  //   .then(addTodoList)
+  //   .then(enableForm);
 };
 
 // Run the main function when the DOM content has loaded and WebUI is ready.

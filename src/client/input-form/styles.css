@@ -1,0 +1,47 @@
+@import url("./resets.css");
+@import url("./button.css");
+
+/* Move to list item. */
+input {
+	background-color: transparent;
+	accent-color: var(--color-success-main);
+	color: var(--color);
+}
+
+#editor {
+	margin-inline: var(--margin-lg);
+	display: flex;
+	align-items: stretch;
+	gap: 16px;
+}
+
+#editor-textfield {
+	border: 2px solid var(--border-color);
+	border-radius: var(--border-radius-xs);
+	outline: none;
+	padding: 8px 16px;
+	flex: 1;
+	font-size: 16px;
+}
+
+#editor-textfield::placeholder {
+	color: var(--border-color);
+}
+
+#editor-textfield:focus-within {
+	border-color: var(--color-primary-main);
+}
+
+#editor-submit-button {
+	background-color: var(--color-primary-dark);
+	color: white;
+
+	&:disabled {
+	  background-color: var(--border-color);
+	}
+}
+
+#editor-submit-button:not(:disabled):hover {
+	background-color: var(--color-primary-main);
+}
+

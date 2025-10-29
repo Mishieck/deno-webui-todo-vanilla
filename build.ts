@@ -26,7 +26,9 @@ export const shell: DenoShell = (strings, ...expressions) => {
 };
 
 export const build = async (optimize: boolean) => {
-  const output = await shell`bundle --outdir dist ./src/client/index.html`;
+  const output =
+    await shell`bundle --unstable-raw-imports --outdir dist ./src/client/index.html`;
+
   const htmlFilePath = new URL("./dist/index.html", import.meta.url);
   const html = await Deno.readTextFile(htmlFilePath);
   const newHtml = insertWebUiScript(html);
@@ -44,10 +46,17 @@ const insertWebUiScript = (html: string): string => {
     html.substring(insertionIndex);
 };
 
+// TODO: Remove this when Deno bundles CSS.
 const moveStyles = async () => {
-  const stylesPath = new URL("./src/client/index.css", import.meta.url);
-  const stylesDistPath = new URL("./dist/index.css", import.meta.url);
-  await Deno.copyFile(stylesPath, stylesDistPath);
+  const styleNames = ["index", "resets", "button"];
+
+  const pathEntries = styleNames
+    .map((name) => [`./src/client/${name}.css`, `./dist/${name}.css`])
+    .map((entry) => entry.map((path) => new URL(path, import.meta.url)));
+
+  for (const [source, destination] of pathEntries) {
+    await Deno.copyFile(source, destination);
+  }
 };
 
 if (import.meta.main) await build(true);

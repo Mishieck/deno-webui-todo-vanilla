@@ -1,0 +1,29 @@
+@import url("./resets.css");
+
+#root {
+	margin-top: 32px;
+	margin-inline: auto;
+	border-radius: var(--border-radius-md);
+	width: 600px;
+	padding-top: 32px;
+	padding-bottom: var(--padding-lg);
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: var(--spacing-lg);
+	background-color: #666;
+	color: var(--color);
+
+  & > #heading {
+  	text-align: center;
+  	font-size: 3rem;
+  }
+
+  & > #divider {
+  	border-bottom: 2px solid var(--border-color);
+  }
+
+  & > #body {
+  	margin-inline: var(--margin-lg);
+  }
+}
