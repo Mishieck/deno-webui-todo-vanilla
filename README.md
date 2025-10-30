@@ -12,8 +12,8 @@ A todo app created using [WebUI](https://webui.me) and [Deno](https://deno.com).
 ## Usage
 
 ```sh
-git clone https://github.com/mishieck/webui-deno
-cd webui-deno
+git clone https://github.com/mishieck/deno-webui-todo-vanilla
+cd deno-webui-todo-vanilla
 deno install
 deno task dev
 ```
