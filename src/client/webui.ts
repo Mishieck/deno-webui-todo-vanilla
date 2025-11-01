@@ -20,11 +20,16 @@ export type WebuiBridgeEvent = {
   DISCONNECTED: 1;
 };
 
+export type Params = Array<DataTypes>;
+export type Output = DataTypes | void;
+
+export type Callback<
+  P extends Params = Params,
+  O extends Output = Output,
+> = { args: P; output: O };
+
 export type Extensions = {
-  callbacks: Record<
-    string,
-    { args: Array<DataTypes>; output: DataTypes | void }
-  >;
+  callbacks: Record<string, Callback>;
 };
 
 export abstract class WebuiBridge<Ext extends Extensions = Extensions> {

@@ -1,7 +1,9 @@
+import { Callback } from "../client/webui.ts";
+
 export type Callbacks = {
-  addTodo: { args: [id: string]; output: string };
-  getTodoList: { args: []; output: string };
-  updateTodo: { args: [id: string]; output: string };
-  deleteTodo: { args: [id: string]; output: string };
-  exit: { args: []; output: void };
+  addTodo: Callback<[id: string], string>;
+  getTodoList: Callback<[], string>;
+  updateTodo: Callback<[id: string], string>;
+  deleteTodo: Callback<[id: string], string>;
+  exit: Callback<[], void>;
 };
