@@ -1,4 +1,6 @@
-li {
+@import url("../resets.css");
+
+:host {
 	display: flex;
 	align-items: center;
 }

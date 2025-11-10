@@ -5,7 +5,7 @@ const PREFIX = "todo-list";
 let store: Deno.Kv;
 const createKey = (id: string) => [PREFIX, id];
 
-export class TodoList {
+export class DatabaseTodoList {
   async init() {
     store = await Deno.openKv();
   }
@@ -29,7 +29,7 @@ export class TodoList {
     let entry: Deno.KvEntry<TodoData> | undefined = undefined;
     const list = store.list<TodoData>({ prefix: [PREFIX] });
     while ((entry = (await list.next()).value)) items.push(entry.value);
-    return items;
+    return items.toSorted((a, b) => b.timeAdded - a.timeAdded);
   }
 
   async update(id: TodoData["id"]): Promise<Result<TodoData, "NOT_FOUND">> {

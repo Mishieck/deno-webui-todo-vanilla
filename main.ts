@@ -1,11 +1,12 @@
 import { BindCallback, WebUI } from "@webui/deno-webui";
-import { TodoList } from "./src/server/database.ts";
+import { DatabaseTodoList } from "./src/server/database.ts";
 import { Todo } from "./src/shared/todo.ts";
 import { Callbacks } from "./src/shared/callbacks.ts";
 
-const todoList = new TodoList();
+let todoList: DatabaseTodoList;
 
 export const run = async () => {
+  todoList = new DatabaseTodoList();
   const win = new WebUI();
 
   bindAll(win, {

@@ -1,7 +1,7 @@
 {
   "tasks": {
     "dev": "deno run -A dev.ts",
-    "watch": "deno run -A watch.ts",
+    "watch": "deno run -A --unstable-kv watch.ts",
     "build": "deno run -A build.ts"
   },
   "imports": {
@@ -9,6 +9,7 @@
     "ramda": "https://deno.land/x/ramda@v0.27.2/mod.ts"
   },
   "compilerOptions": {
-    "lib": ["es2024", "deno.ns", "deno.unstable", "dom"]
+    "lib": ["es2024", "deno.ns", "deno.unstable", "dom"],
+    "types": ["./src/client/global.d.ts"]
   }
 }

@@ -24,7 +24,7 @@ const watch = (run: AppFunction) => async () => {
 
     if (event.kind === "modify" && paths.length) {
       try {
-        // await new Promise((r) => setTimeout(r, 10));
+        await new Promise((r) => setTimeout(r, 10));
         exit();
         await runBuild();
         await run();

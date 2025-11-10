@@ -1,0 +1,7 @@
+input {
+	background-color: transparent;
+	accent-color: var(--color-success-main);
+	color: var(--color);
+	border-radius: var(--border-radius-xs);
+	font-size: 1rem;
+}

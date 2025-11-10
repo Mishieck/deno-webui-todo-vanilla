@@ -1,20 +1,29 @@
-input {
-	--size: 24px;
-	border-radius: var(--border-radius-xs);
-	width: var(--size);
-	height: var(--size);
-	font-size: 1.5rem;
+@import url("../resets.css");
+@import url("../input.css");
+@import url("../button.css");
+
+:host {
+	width: 100%;
+	display: flex;
+	gap: 1rem;
+
+	&::part(checkbox) {
+		--size: 24px;
+		width: var(--size);
+		height: var(--size);
+	}
+
+	&::part(content) {
+		flex: 1;
+	}
+
+	&::part(button) {
+		background-color: var(--color-danger-dark);
+		color: white;
+
+	  &:hover {
+	  	background-color: var(--color-danger-main);
+	  }
+	}
 }
 
-p {
-	flex: 1;
-}
-
-button {
-	background-color: var(--color-danger-dark);
-	color: white;
-
-  &:hover {
-  	background-color: var(--color-danger-main);
-  }
-}

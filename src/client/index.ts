@@ -1,6 +1,5 @@
 import { AddResult } from "../shared/database.ts";
 import { Todo, TodoData } from "../shared/todo.ts";
-import "./global.d.ts";
 import "./todo-app.ts";
 
 let editor: HTMLFormElement;

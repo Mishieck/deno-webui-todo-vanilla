@@ -1,35 +1,31 @@
-list-item {
+@import url("../resets.css");
+
+:host {
 	--height-sm: 24px;
 	--height-md: 32px;
-	animation: fadeInOut 1s linear alternate infinite;
 
-  & > [slot] {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+
+  & > * {
   	border-radius: var(--border-radius-xs);
   	background-color: var(--border-color);
-
-    &[slot="start"] {
-    	width: var(--height-sm);
-    	height: var(--height-sm);
-    }
-
-    &[slot="content"] {
-    	flex: 1;
-    	height: var(--height-sm);
-    }
-
-    &[slot="end"] {
-    	width: 85px;
-    	height: var(--height-md);
-    }
   }
-}
 
-@keyframes fadeInOut {
-	0% {
-	  opacity: 0.5;
-	}
+	&::part(checkbox) {
+  	width: var(--height-sm);
+  	height: var(--height-sm);
+  }
 
-	100% {
-	  opacity: 1;
-	}
+  &::part(content) {
+  	flex: 1;
+  	height: var(--height-sm);
+  }
+
+  &::part(button) {
+  	width: 85px;
+  	height: var(--height-md);
+  }
 }

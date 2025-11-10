@@ -1,6 +1,6 @@
 @import url("./resets.css");
 
-#root {
+:host {
 	margin-top: 32px;
 	margin-inline: auto;
 	border-radius: var(--border-radius-md);
@@ -14,16 +14,16 @@
 	background-color: #666;
 	color: var(--color);
 
-  & > #heading {
+  &::part(heading) {
   	text-align: center;
   	font-size: 3rem;
   }
 
-  & > #divider {
+  &::part(divider) {
   	border-bottom: 2px solid var(--border-color);
   }
 
-  & > #body {
+  &::part(body) {
   	margin-inline: var(--margin-lg);
   }
 }

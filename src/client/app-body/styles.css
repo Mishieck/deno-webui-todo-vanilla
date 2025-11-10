@@ -1,0 +1,49 @@
+@import url("../resets.css");
+
+:host(:state(loading)) {
+  &::part(alert), 
+  &::part(todo-list) {
+    display: none;
+  }
+}
+
+:host(:state(content)) {
+  &::part(alert), 
+  &::part(skeleton-list) {
+    display: none;
+  }
+}
+
+:host(:state(empty)) {
+  &::part(skeleton-list), 
+  &::part(todo-list) {
+    display: none;
+  }
+}
+
+:host {
+  &::part(skeleton-list) {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    list-style-type: none;
+  	animation: fadeInOut 1s linear alternate infinite;
+
+    & > li {
+      & > skeleton-item {
+      	width: 100%;
+      }
+    }
+  }
+}
+
+@keyframes fadeInOut {
+	0% {
+	  opacity: 0.5;
+	}
+
+	100% {
+	  opacity: 1;
+	}
+}
