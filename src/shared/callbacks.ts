@@ -1,9 +1,9 @@
-import { Callback } from "../client/webui.ts";
+import { CallbackAttributes } from "../client/bridge/webui.ts";
 
 export type Callbacks = {
-  addTodo: Callback<[id: string], string>;
-  getTodoList: Callback<[], string>;
-  updateTodo: Callback<[id: string], string>;
-  deleteTodo: Callback<[id: string], string>;
-  exit: Callback<[], void>;
+  addTodo: CallbackAttributes<[id: string], string>;
+  getTodoList: CallbackAttributes<[], string>;
+  updateTodo: CallbackAttributes<[id: string], string>;
+  deleteTodo: CallbackAttributes<[id: string], string>;
+  exit: CallbackAttributes<[], void>;
 };

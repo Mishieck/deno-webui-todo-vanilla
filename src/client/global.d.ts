@@ -1,6 +1,6 @@
 import { Callbacks } from "../shared/callbacks.ts";
-import type { WebuiBridge } from "./webui.ts";
+import type { WithExtensions } from "./bridge/webui.ts";
 
 declare global {
-  export const webui: WebuiBridge<{ callbacks: Callbacks }>;
+  export const webui: WithExtensions<{ callbacks: Callbacks }>;
 }
